@@ -9,7 +9,7 @@
 
     Created by: Elvin Rivera
     Date: 1/21/2020
-    Description: This is a script to get all Domain Controllers in the SJVC environement and to add DHCP Failover for each of them
+    Description: This is a script to get all Domain Controllers in the S** environement and to add DHCP Failover for each of them
 
 
 #>
@@ -50,7 +50,7 @@ M-**1
 O-**1      
 P-**C         
 RC-**1       
-SBB-**C    
+SB-**C    
 S-**C    
 SJ**-AZ-**r
 SJ**-B**1     
@@ -101,7 +101,7 @@ $scopes = @(Get-DhcpServerv4Scope -ComputerName $DCServer | Select-Object -Expan
 ## to clarify, it's primary (active --ComputerName) failing over to secondary (standby -- s***c.edu)
 
 
-Add-DhcpServerv4Failover -ComputerName $DCServer -Name ($DCserver + "-sj**.sjvc.edu") -PartnerServer "SJ**.sjvc.edu" `
+Add-DhcpServerv4Failover -ComputerName $DCServer -Name ($DCserver + "-sj**edu") -PartnerServer "SJ**edu" `
 -ScopeId $scopes -ReservePercent 5 -ServerRole "Active" `
 -MaxClientLeadTime 1:00:00 -AutoStateTransition $True -StateSwitchInterval 1:00:00 -SharedSecret $sharedsecret
 
