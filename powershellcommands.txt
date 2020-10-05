@@ -1,0 +1,59 @@
+get status of a connection:
+Get-NetAdapter -Name "*" -CimSession "**your pc number**"
+
+create new new directory using:
+New-Item -Name "DC_Connectivity_DailyResults" -ItemType Directory
+
+list all servers in a txt file
+Get-ADDomainController -Filter * | select name, ipv4address, operatingsystem, site | Sort-Object -property name > C:\Users\username\Desktop\dc_list.txt
+
+Get AD user and when they were created
+Get-ADUser "**ad user**" -Properties whenCreated | Format-List Name,whenCreated
+
+get all esxi host in vcenter
+$serverlist = (Get-Content "C:\Users\username\Desktop\esxi.txt")
+Get-VMHost -Location $serverlist
+
+Get all trigged alarms for esxi
+(Get-VMHost).ExtensionData.triggeredalarmstate > C:\Users\username\Desktop\testing.txt
+
+$what = Get-VMHost -Name "**name of esxi server you're working on**"
+($what).ExtensionData.triggeredalarmstate > C:\Users\username\Desktop\testing.txt
+
+get the names of esxi host and place them into a text file
+Get-VMHost | select name > C:\Users\username\Desktop\esxitriggered.txt
+
+Provide a txt file containing alarms
+$what = Get-VMHost -Name "**list esxis**"
+($what).ExtensionData.triggeredalarmstate > C:\Users\username\Desktop\testing.txt
+
+
+get alarms from datastore (vm's)
+foreach($dc in (Get-Datacenter | where {$_.ExtensionData.triggeredAlarmState})){
+
+    $dc.ExtensionData.triggeredAlarmState |
+
+    Select @{N="Entity";E={Get-View $_.Entity | Select -ExpandProperty Name}},
+
+        @{N="Alarm";E={Get-View $_.Alarm | Select -ExpandProperty Info | Select -ExpandProperty Name}},Time,OverallStatus,
+
+        @{N='vCenter';E={$dc.Uid.Split('@:')[1]}}
+
+}
+
+
+This is for esxi only
+foreach($dc in (Get-VMhost | where {$_.ExtensionData.triggeredAlarmState})){
+
+    $dc.ExtensionData.triggeredAlarmState |
+
+    Select @{N="Entity";E={Get-View $_.Entity | Select -ExpandProperty Name}},
+
+        @{N="Alarm";E={Get-View $_.Alarm | Select -ExpandProperty Info | Select -ExpandProperty Name}},Time,OverallStatus,
+
+        @{N='vCenter';E={$dc.Uid.Split('@:')[1]}}
+
+}
+
+automatically do sign in for you
+Connect-VIServer -Server "**ip of main server**" -Protocol https -Username '**username**' -Password '**password**'

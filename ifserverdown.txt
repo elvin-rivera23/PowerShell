@@ -1,0 +1,56 @@
+Function Test-Server {
+        [CmdletBinding()]
+                
+        # Parameters used in this function
+        param
+        ( 
+            [Parameter(Position=0, Mandatory = $true, HelpMessage="Provide server names", ValueFromPipeline = $false)] 
+            $ComputerName
+        ) 
+ 
+        $Array = @()
+ 
+        ForEach($Server in $ComputerName)
+        {
+            $Server = $Server.Trim()
+ 
+            Write-Verbose "Checking $Server"
+ 
+            $SMB = $null
+            $Object = $null
+            $Status = $null
+ 
+            $SMB = Test-Path "\\$server\c$"
+ 
+            If($SMB -eq "True")
+            {
+                Write-Verbose "$Server is up"
+                $Status = "True"
+                $Object = New-Object PSObject -Property ([ordered]@{ 
+                      
+                    Server                = $Server
+                    "Is Online?"          = $Status
+                })
+    
+                $Array += $Object
+            }
+            Else
+            {
+                Write-Verbose "$Server is down"
+                $Status = "False"
+                $Object = New-Object PSObject -Property ([ordered]@{ 
+                      
+                    Server                = $Server
+                    "Is Online?"          = $Status
+  
+                })
+    
+                $Array += $Object
+            }
+        }
+ 
+    If($Array)
+    {
+        return $Array
+    }
+}

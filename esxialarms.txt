@@ -1,0 +1,16 @@
+Connect-VIServer -Menu
+
+$getit = foreach($dc in (Get-VMhost | where {$_.ExtensionData.triggeredAlarmState}))
+{
+
+    $dc.ExtensionData.triggeredAlarmState |
+
+    Select @{N="Entity";E={Get-View $_.Entity | Select -ExpandProperty Name}},
+
+        @{N="Alarm";E={Get-View $_.Alarm | Select -ExpandProperty Info | Select -ExpandProperty Name}},Time,OverallStatus,
+
+        @{N='vCenter';E={$dc.Uid.Split('@:')[1]}}
+
+}
+
+$getit | Export-Csv -Path C:\Users\**\ESXiAlarm.csv -NoTypeInformation

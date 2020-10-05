@@ -1,0 +1,8 @@
+. C:\Users\username\Documents\WindowsPowerShell\statuscheck.ps1
+Test-Server -ComputerName (Get-Content "C:\Users\username\Documents\servers.txt") -Verbose |  Export-Csv -Path C:\Users\username\Desktop\results.csv -NoTypeInformation
+
+$action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument 'C:\Users\username\Documents\WindowsPowerShell\realserverstatuscheck.ps1'
+
+$trigger = New-ScheduledTaskTrigger -Daily -At 7am
+
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "thisistheking" -Description "Admin was here"
